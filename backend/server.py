@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import produtos_dao
 from sql_connection import get_sql_connection
+import json
 
 
 app = Flask (__name__)
@@ -21,6 +22,16 @@ def delete_product():
         'id_cerveja': return_id
 
 
+    })
+    response.headers.add('Acess-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/insertProduct', methods=['POST'])
+def insert_product():
+    request_payload = json.loads(request.form['data'])
+    id_cerveja = produtos_dao.insert_new_product(connection,request_payload)
+    response = jsonify({
+        'id_cerveja' : id_cerveja
     })
     response.headers.add('Acess-Control-Allow-Origin', '*')
     return response
