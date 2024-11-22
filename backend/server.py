@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import produtos_dao
+import pedidos_dao
 from sql_connection import get_sql_connection
 import json
 
@@ -25,6 +26,27 @@ def delete_product():
     })
     response.headers.add('Acess-Control-Allow-Origin', '*')
     return response
+
+
+@app.route('/insertOrder', methods=['POST'])
+def insert_order():
+    request_payload = json.loads(request.form['data'])
+    id_pedido = pedidos_dao.insert_order(connection, request_payload)
+    response = jsonify({
+        'id_pedido':id_pedido
+    })
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@app.route('/getAllOrders', methods=['GET'])
+def get_all_orders():
+    response = pedidos_dao.get_all_orders(connection)
+    response = jsonify(response)
+    response.headers.add('Acess-Control-Allow-Origin', '*')
+    return response
+
+
+
 
 @app.route('/insertProduct', methods=['POST'])
 def insert_product():
